@@ -33,7 +33,8 @@ jobs:
       - name: Build Scarb
         run: |
           cd scarb
-          git checkout maciektr/opt
+          # git checkout maciektr/opt
+          git checkout 2aa8296e16437decdc7c888e944bf14097236988
           cargo build -p scarb --profile=ci
           echo "$GITHUB_WORKSPACE/scarb/target/ci" >> $GITHUB_PATH
           cd ..
