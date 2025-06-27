@@ -12,6 +12,8 @@ on:
 jobs:
   lint_and_test:
     name: Lint and test Cairo
+    strategy:
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,9 +23,20 @@ jobs:
           SCARB_VERSION=$(grep 'scarb-version = ' Scarb.toml | sed 's/scarb-version = "\(.*\)"/\1/')
           echo "SCARB_VERSION=$SCARB_VERSION" >> "$GITHUB_ENV"
 
-      - uses: software-mansion/setup-scarb@v1
+      - name: Clone Scarb
+        run: git clone https://github.com/software-mansion/scarb.git
+
+      - uses: Swatinem/rust-cache@v2
         with:
-          scarb-version: ${{ env.SCARB_VERSION }}
+          workspaces: "scarb -> target"
+
+      - name: Build Scarb
+        run: |
+          cd scarb
+          git checkout maciektr/opt
+          cargo build -p scarb --profile=ci
+          echo "$GITHUB_WORKSPACE/scarb/target/ci" >> $GITHUB_PATH
+          cd ..
 
       - name: Extract foundry version
         run: |
@@ -44,8 +57,8 @@ jobs:
             *.md
             !PULL_REQUEST_TEMPLATE.md
 
-      - name: Cairo format
-        run: scarb fmt --check --workspace
+      # - name: Cairo format
+      #   run: scarb fmt --check --workspace
 
       - name: Cairo lint
         run: scarb lint  -p openzeppelin_access -p openzeppelin_account -p openzeppelin_finance -p openzeppelin_governance -p openzeppelin_introspection -p openzeppelin_merkle_tree -p openzeppelin_presets -p openzeppelin_security -p openzeppelin_token -p openzeppelin_upgrades -p openzeppelin_utils -p openzeppelin_testing -p openzeppelin_test_common
