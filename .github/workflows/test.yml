@@ -19,6 +19,11 @@ jobs:
           SCARB_VERSION=$(grep 'scarb-version = ' Scarb.toml | sed 's/scarb-version = "\(.*\)"/\1/')
           echo "SCARB_VERSION=$SCARB_VERSION" >> "$GITHUB_ENV"
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "packages/macros"
+          cache-targets: "false"
+
       - uses: software-mansion/setup-scarb@a956ac5052cdc27116fd5f70cc56da700974fa65
         with:
           scarb-version: nightly-2025-07-09
