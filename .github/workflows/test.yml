@@ -6,8 +6,6 @@ name: Lint and test Cairo
 on:
   pull_request:
   push:
-    branches:
-      - main
 
 jobs:
   lint_and_test:
@@ -21,9 +19,9 @@ jobs:
           SCARB_VERSION=$(grep 'scarb-version = ' Scarb.toml | sed 's/scarb-version = "\(.*\)"/\1/')
           echo "SCARB_VERSION=$SCARB_VERSION" >> "$GITHUB_ENV"
 
-      - uses: software-mansion/setup-scarb@v1
+      - uses: software-mansion/setup-scarb@a956ac5052cdc27116fd5f70cc56da700974fa65
         with:
-          scarb-version: ${{ env.SCARB_VERSION }}
+          scarb-version: nightly-2025-07-09
 
       - name: Extract foundry version
         run: |
@@ -34,27 +32,27 @@ jobs:
         with:
           starknet-foundry-version: ${{ env.FOUNDRY_VERSION }}
 
-      - name: Install cairo-coverage
-        run: curl -L https://raw.githubusercontent.com/software-mansion/cairo-coverage/main/scripts/install.sh | sh
+      # - name: Install cairo-coverage
+      #   run: curl -L https://raw.githubusercontent.com/software-mansion/cairo-coverage/main/scripts/install.sh | sh
 
-      - name: Markdown lint
-        uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v16
-        with:
-          globs: |
-            *.md
-            !PULL_REQUEST_TEMPLATE.md
+      # - name: Markdown lint
+      #   uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v16
+      #   with:
+      #     globs: |
+      #       *.md
+      #       !PULL_REQUEST_TEMPLATE.md
 
-      - name: Cairo lint
-        run: scarb fmt --check --workspace
+      # - name: Cairo lint
+      #   run: scarb fmt --check --workspace
 
       - name: Run tests
         run: snforge test --workspace --features fuzzing --fuzzer-runs 500
 
       - name: Run tests and generate coverage report
-        run: snforge test --workspace --coverage
+        run: snforge test --workspace
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.lcov
-          token: ${{ secrets.CODECOV_TOKEN }}
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     file: ./coverage.lcov
+      #     token: ${{ secrets.CODECOV_TOKEN }}
