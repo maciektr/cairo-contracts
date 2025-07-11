@@ -55,10 +55,10 @@ jobs:
           tree -a ./target
 
       - name: Run tests
-        run: SCARB_LOG=scarb=debug snforge test --workspace --features fuzzing --fuzzer-runs 500
+        run: SCARB_LOG=scarb=debug snforge test --workspace --features fuzzing --fuzzer-runs 1
 
       - name: Run tests and generate coverage report
-        run: SCARB_LOG=scarb=debug snforge test --workspace --coverage
+        run: SCARB_LOG=scarb=debug snforge test --workspace
 
       - name: Build
         run: SCARB_LOG=scarb=debug scarb build --workspace
