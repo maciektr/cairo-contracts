@@ -45,11 +45,18 @@ jobs:
       # - name: Cairo lint
       #   run: scarb fmt --check --workspace
 
+      - name: Tree target directory
+        run: |
+          tree -a ./target
+
       - name: Run tests
-        run: snforge test --workspace --features fuzzing --fuzzer-runs 500
+        run: SCARB_LOG=scarb=debug snforge test --workspace --features fuzzing --fuzzer-runs 500
 
       - name: Run tests and generate coverage report
-        run: snforge test --workspace
+        run: SCARB_LOG=scarb=debug snforge test --workspace --coverage
+
+      - name: Build
+        run: SCARB_LOG=scarb=debug scarb build --workspace
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
