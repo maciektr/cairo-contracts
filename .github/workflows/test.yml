@@ -26,7 +26,7 @@ jobs:
 
       - uses: software-mansion/setup-scarb@a956ac5052cdc27116fd5f70cc56da700974fa65
         with:
-          scarb-version: nightly-2025-07-09
+          scarb-version: nightly-2025-07-14
 
       - name: Extract foundry version
         run: |
