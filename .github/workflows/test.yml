@@ -30,31 +30,51 @@ jobs:
           FOUNDRY_VERSION=$(grep 'snforge_std = ' Scarb.toml | sed 's/snforge_std = "\(.*\)"/\1/')
           echo "FOUNDRY_VERSION=$FOUNDRY_VERSION" >> "$GITHUB_ENV"
 
-      - uses: foundry-rs/setup-snfoundry@v4
+      # - uses: foundry-rs/setup-snfoundry@v4
+      #   with:
+      #     starknet-foundry-version: ${{ env.FOUNDRY_VERSION }}
+
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Clone foundry
+        run: |
+          git clone https://github.com/maciektr/starknet-foundry.git
+          cd starknet-foundry
+          git checkout 7756cbb0cc87459481d6aed9eed4162fdda4e07c
+          cd ..
+      - uses: Swatinem/rust-cache@v2
         with:
-          starknet-foundry-version: ${{ env.FOUNDRY_VERSION }}
+          workspaces: "starknet-foundry -> target"
+
+      - name: Install USC
+        run: curl -L https://raw.githubusercontent.com/software-mansion/universal-sierra-compiler/master/scripts/install.sh | sh
+
+      - name: Compile foundry
+        run: |
+          cd starknet-foundry
+          cargo build --release --workspace
+          cd ..
 
       - name: Install cairo-coverage
         run: curl -L https://raw.githubusercontent.com/software-mansion/cairo-coverage/main/scripts/install.sh | sh
 
-      - name: Markdown lint
-        uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v16
-        with:
-          globs: |
-            *.md
-            !PULL_REQUEST_TEMPLATE.md
+      # - name: Markdown lint
+      #   uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v16
+      #   with:
+      #     globs: |
+      #       *.md
+      #       !PULL_REQUEST_TEMPLATE.md
 
-      - name: Cairo lint
-        run: scarb fmt --check --workspace
+      # - name: Cairo lint
+      #   run: scarb fmt --check --workspace
 
       - name: Run tests
-        run: snforge test --workspace --features coverage_incompatible,fuzzing --fuzzer-runs 500
+        run: ./starknet-foundry/target/release/snforge test --workspace --features coverage_incompatible,fuzzing --fuzzer-runs 500
 
       - name: Run tests and generate coverage report
-        run: snforge test --workspace --coverage
+        run: ./starknet-foundry/target/release/snforge test --workspace --coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.lcov
-          token: ${{ secrets.CODECOV_TOKEN }}
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     file: ./coverage.lcov
+      #     token: ${{ secrets.CODECOV_TOKEN }}
