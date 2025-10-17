@@ -39,7 +39,7 @@ jobs:
         run: |
           git clone https://github.com/maciektr/starknet-foundry.git
           cd starknet-foundry
-          git checkout 7756cbb0cc87459481d6aed9eed4162fdda4e07c
+          git checkout ff9fda4b8848cd2f4fff5934fb3ec1b6bbaa0982
           cd ..
       - uses: Swatinem/rust-cache@v2
         with:
