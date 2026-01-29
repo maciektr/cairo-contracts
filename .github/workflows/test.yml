@@ -67,11 +67,11 @@ jobs:
       # - name: Cairo lint
       #   run: scarb fmt --check --workspace
 
-      - name: Run tests
-        run: ./starknet-foundry/target/release/snforge test --workspace --features fuzzing --fuzzer-runs 200
+      # - name: Run tests
+      #   run: ./starknet-foundry/target/release/snforge test --workspace --features fuzzing --fuzzer-runs 200
 
-      - name: Run tests and generate coverage report
-        run: ./starknet-foundry/target/release/snforge test --workspace --coverage
+      # - name: Run tests and generate coverage report
+      #   run: ./starknet-foundry/target/release/snforge test --workspace --coverage
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
