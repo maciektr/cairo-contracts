@@ -39,7 +39,7 @@ jobs:
         run: |
           git clone https://github.com/maciektr/starknet-foundry.git
           cd starknet-foundry
-          git checkout dd6fcb815ff9a1e226cfcf48febaae4378f689a3
+          git checkout cf0942e2903b4c3bbb6b92c2faad246f2b070298
           cd ..
       - uses: Swatinem/rust-cache@v2
         with:
@@ -67,11 +67,11 @@ jobs:
       # - name: Cairo lint
       #   run: scarb fmt --check --workspace
 
-      # - name: Run tests
-      #   run: ./starknet-foundry/target/release/snforge test --workspace --features fuzzing --fuzzer-runs 200
+      - name: Run tests
+        run: ./starknet-foundry/target/release/snforge test --workspace --features fuzzing --fuzzer-runs 200
 
-      # - name: Run tests and generate coverage report
-      #   run: ./starknet-foundry/target/release/snforge test --workspace --coverage
+      - name: Run tests and generate coverage report
+        run: ./starknet-foundry/target/release/snforge test --workspace --coverage
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
